@@ -25,17 +25,6 @@ sudo dnf install ansible -y
 sudo ansible-playbook site.yml
 ```
 
- KNOWN ISSUES
-================================================================================
-- firewall
-
->fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (firewall) on localhost.localdomain's Python /usr/bin/python3.11. Please read the module documentation and install it in the appropriate location. If the required library is installed, but Ansible is using the wrong Python interpreter, please consult the documentation on ansible_python_interpreter. Version 0.2.11 or newer required (0.3.9 or newer for offline operations)"}
-
-- wordpress
-
->An exception occurred during task execution. To see the full traceback, use -vvv. The error was: ModuleNotFoundError: No module named 'requests'
->fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to import the required Python library (requests) on localhost.localdomain's Python /usr/bin/python3.11. Please read the module documentation and install it in the appropriate location. If the required library is installed, but Ansible is using the wrong Python interpreter, please consult the documentation on ansible_python_interpreter"}
-
  TODO 
 ================================================================================
 - wordpress, mariadb

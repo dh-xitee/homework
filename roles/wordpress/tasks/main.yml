@@ -5,32 +5,24 @@
     state: present
   with_items:
     - docker
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
 
 - name: install docker
   yum: name=docker state=present
 
-- name: WP Container present
-  community.docker.docker_container:
-    name: mycontainer
-    state: present
-    image: wordpress
-    command: sleep infinity
-    
-#- name: Deploy MariaDB server
-#  docker_container:
-#    vars:
-#      db_volume: mariadb
-#      wordpress: wordpress
-#    image: mariadb
-#    name: mariadb
-#    volumes:
-#      - "{{db_volume}}:/var/lib/mysql"
-#    env:
-#      MYSQL_ROOT_PASSWORD: somerootpassword
-#      MYSQL_PASSWORD: somemysqlpassword
-#      MYSQL_DATABASE: db
-#      MYSQL_USER: mysqluser
-#
+- name: Deploy MariaDB server
+  docker_container:
+    image: mariadb
+    name: mariadb
+    volumes:
+      - "mariadb:/var/lib/mysql"
+    env:
+      MYSQL_ROOT_PASSWORD: somerootpassword
+      MYSQL_PASSWORD: somemysqlpassword
+      MYSQL_DATABASE: db
+      MYSQL_USER: mysqluser
+
 #- name: Deploy WordPress
 #    docker_container:
 #      image: wordpress
@@ -39,9 +31,9 @@
 #      ports:
 #        - "8080:80"
 #      links:
-#        - "{{db_volume}}:/var/lib/mysql"
+#        - "mariadb:/var/lib/mysql"
 #      volumes:
-#        - "{{wordpress}}:/var/www/html"
+#        - "wordpress:/var/www/html"
 #      env:
 #        MYSQL_PASSWORD: somemysqlpassword
 #        MYSQL_DATABASE: db

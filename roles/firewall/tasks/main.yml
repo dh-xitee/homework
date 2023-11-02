@@ -5,8 +5,8 @@
     state: present
   with_items:
     - firewalld
-#  vars:
-#    ansible_python_interpreter: /usr/bin/python
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
        
 - name: install firewalld
   yum: name=firewalld state=present
@@ -14,20 +14,7 @@
 - name: firewalld service state
   service: name=firewalld state=started enabled=yes
 
-- name: OPTIONAL Install or upgrade the net-tools package
-  yum: name=net-tools state=latest
-  
-- name: Add ports to firewall
-  ansible.posix.firewalld:
-    port: "22/tcp"
-    state: enabled
-    immediate: true
-    permanent: true
-
-
-
 - name: firewalld rules
-#  ansible.posix.firewalld:
   firewalld:
     permanent: yes
     immediate: yes
@@ -36,3 +23,5 @@
   with_items:
    - ssh
    - http
+ 
+   
