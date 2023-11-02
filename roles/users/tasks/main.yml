@@ -5,7 +5,7 @@
     shell: /bin/bash
     password: $6$avVst0qosTCTx8KF$tcLH9TdZEu/u46Bbo0mEbzyNMJKkKwC08W.7x9/G5/MKN53nXic2PpLzfQxmBr7ZQhbeAxkbt81SAmT1o7vAK0
 
-- name: set up  authorized keys
+- name: set up authorized keys
   authorized_key:
     user: xitest
     state: present
@@ -13,4 +13,9 @@
   with_file:
     - public_keys/key1
     - public_keys/key2
-    
+
+- name: make sudo without password for user 'xitest'
+  copy:
+    dest: /etc/sudoers.d/80-ansible-sudo-user
+    content: "xitest ALL=(ALL) NOPASSWD:ALL"
+    mode: 0440    

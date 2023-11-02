@@ -25,14 +25,6 @@ sudo dnf install ansible -y
 sudo ansible-playbook site.yml
 ```
 
-### Possible dependencies TBD
-```
-sudo pip3 install requests
-sudo yum install python-requests
-sudo yum install python python3-pip
-sudo pip3 install docker
-```
-
  KNOWN ISSUES
 ================================================================================
 - firewall
@@ -46,7 +38,6 @@ sudo pip3 install docker
 
  TODO 
 ================================================================================
-- users - sudo
 - wordpress, mariadb
 - backup - script config/test
 - vars, hosts
