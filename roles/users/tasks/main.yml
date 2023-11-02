@@ -1,0 +1,16 @@
+---
+- name: add the user 'xitest'
+  user:
+    name: xitest
+    shell: /bin/bash
+    password: $6$avVst0qosTCTx8KF$tcLH9TdZEu/u46Bbo0mEbzyNMJKkKwC08W.7x9/G5/MKN53nXic2PpLzfQxmBr7ZQhbeAxkbt81SAmT1o7vAK0
+
+- name: set up  authorized keys
+  authorized_key:
+    user: xitest
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - public_keys/key1
+    - public_keys/key2
+    

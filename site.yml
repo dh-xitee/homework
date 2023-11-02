@@ -1,0 +1,13 @@
+---
+- name: Configure Firewall, Create User 'xitest', Install WordPress in Docker, Schedule Backups
+  hosts: localhost
+  connection: local
+  # hosts: wordpress-server
+  # remote_user: root
+  # sudo: yes
+
+  roles:
+    #- firewall
+    - users
+    #- wordpress
+    - backup

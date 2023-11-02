@@ -1,0 +1,32 @@
+---
+- name: create directory /var/backup
+  file:
+    path: /var/backup
+    state: directory
+    
+- name: deploy backup script to /var/backup/backup.sh
+  ansible.builtin.copy:
+    src: files/backup.sh
+    dest: /var/backup/backup.sh
+    mode: '0755'    
+    
+- name: create CRON job to backup Wordpress daily at 0:00
+  cron:
+    name: "Backup Wordpress 0:00"
+    minute: "0"
+    hour: "0,4"
+    job: "/var/backup/backup.sh"
+
+- name: create CRON job to backup Wordpress daily at 8:00
+  cron:
+    name: "Backup Wordpress 8:00"
+    minute: "0"
+    hour: "8,12"
+    job: "/var/backup/backup.sh"
+
+- name: create CRON job to backup Wordpress daily at 16:00  
+  cron:
+    name: "Backup Wordpress 16:00"
+    minute: "0"
+    hour: "16,20"
+    job: "/var/backup/backup.sh"

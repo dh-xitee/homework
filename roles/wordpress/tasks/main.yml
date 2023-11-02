@@ -1,0 +1,49 @@
+---
+- name: install required packages for docker
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - docker
+
+- name: install docker
+  yum: name=docker state=present
+
+- name: WP Container present
+  community.docker.docker_container:
+    name: mycontainer
+    state: present
+    image: wordpress
+    command: sleep infinity
+    
+#- name: Deploy MariaDB server
+#  docker_container:
+#    vars:
+#      db_volume: mariadb
+#      wordpress: wordpress
+#    image: mariadb
+#    name: mariadb
+#    volumes:
+#      - "{{db_volume}}:/var/lib/mysql"
+#    env:
+#      MYSQL_ROOT_PASSWORD: somerootpassword
+#      MYSQL_PASSWORD: somemysqlpassword
+#      MYSQL_DATABASE: db
+#      MYSQL_USER: mysqluser
+#
+#- name: Deploy WordPress
+#    docker_container:
+#      image: wordpress
+#      name: wordpress
+#      restart_policy: always
+#      ports:
+#        - "8080:80"
+#      links:
+#        - "{{db_volume}}:/var/lib/mysql"
+#      volumes:
+#        - "{{wordpress}}:/var/www/html"
+#      env:
+#        MYSQL_PASSWORD: somemysqlpassword
+#        MYSQL_DATABASE: db
+#        MYSQL_USER: mysqluser
+#        MYSQL_HOST: mariadb    

@@ -1,0 +1,1 @@
+This role creates the user 'xitest' with sudo privileges and adds the ssh keys
