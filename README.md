@@ -27,6 +27,4 @@ sudo ansible-playbook site.yml
 
  TODO 
 ================================================================================
-- wordpress, mariadb
 - backup - script config/test
-- vars, hosts

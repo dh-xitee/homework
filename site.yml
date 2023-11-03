@@ -1,10 +1,42 @@
 ---
-- name: Configure Firewall, Create User 'xitest', Install WordPress in Docker, Schedule Backups
+- name: Configure Firewall, Create User 'xitest', Install WordPress in Docker/Podman, Schedule Backups
   hosts: localhost
   connection: local
-  # hosts: wordpress-server
-  # remote_user: root
-  # sudo: yes
+  become: True
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    
+    # Podman volume for Wordpress
+    WP_HTML: wp_html
+
+    # Podman volume for MariaDB
+    MYSQL_DATA: mysql_data
+
+    # MySQL/MariaDB vars
+    MYSQL_DATABASE: wordpress
+    MYSQL_USER: wordpress
+    MYSQL_PASSWORD: pasx.123
+    MYSQL_ROOT_PASSWORD: pasx.123
+    MYSQL_HOST: 127.0.0.1
+
+    # Vars for MariaDB container
+    MARIADB_SYSTEMD_PATH: ~/.config/systemd/user/
+    MARIADB_CONMON_PIDFILE: /tmp/mariadb_conmon.pid
+    MARIADB_IMAGE: docker.io/library/mariadb:latest
+    MARIADB_NAME: wp_mariadb
+
+    # Vars for Wordpress container
+    WP_CONMON_PIDFILE: /tmp/wp_conmon.pid
+    WP_SYSTEMD_PATH: ~/.config/systemd/user/
+    WP_IMAGE: docker.io/library/wordpress:latest
+    WP_NAME: wordpress
+
+    # Vars for podman-pod(1)
+    POD_NAME: wp_pod
+    POD_INFRA_NAME: wp_pod_infra
+    POD_PORT: 80:80
+    POD_INFRA_CONMON_PIDFILE: /tmp/wp_pod_infra.pid
+    POD_SYSTEMD_PATH: ~/.config/systemd/user/
 
   roles:
     - firewall

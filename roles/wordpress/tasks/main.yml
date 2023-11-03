@@ -1,41 +1,73 @@
 ---
-- name: install required packages for docker
+- name: Install required packages for docker
   package:
     name: '{{ item }}'
     state: present
   with_items:
     - docker
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
+    - podman
 
-- name: install docker
+- name: install Docker/Podman
   yum: name=docker state=present
 
-- name: Deploy MariaDB server
-  docker_container:
-    image: mariadb
-    name: mariadb
-    volumes:
-      - "mariadb:/var/lib/mysql"
-    env:
-      MYSQL_ROOT_PASSWORD: somerootpassword
-      MYSQL_PASSWORD: somemysqlpassword
-      MYSQL_DATABASE: db
-      MYSQL_USER: mysqluser
+- name: Volume for the Wordpress files 
+  containers.podman.podman_volume:
+    state: present
+    name: "{{ WP_HTML }}"
+    recreate: no
+    debug: no
 
-#- name: Deploy WordPress
-#    docker_container:
-#      image: wordpress
-#      name: wordpress
-#      restart_policy: always
-#      ports:
-#        - "8080:80"
-#      links:
-#        - "mariadb:/var/lib/mysql"
-#      volumes:
-#        - "wordpress:/var/www/html"
-#      env:
-#        MYSQL_PASSWORD: somemysqlpassword
-#        MYSQL_DATABASE: db
-#        MYSQL_USER: mysqluser
-#        MYSQL_HOST: mariadb    
+- name: Volume for the MySQL data files
+  containers.podman.podman_volume:
+    state: present
+    name: "{{ MYSQL_DATA }}"
+    recreate: no
+    debug: no
+
+- name: Create the podman-pod(1)
+  containers.podman.podman_pod:
+    debug: no
+    infra: yes
+    infra_conmon_pidfile: "{{ POD_INFRA_CONMON_PIDFILE }}"
+    publish: "{{ POD_PORT }}"
+    name: "{{ POD_NAME }}"
+    state: started
+    recreate: yes
+
+- name: Create MariaDB container
+  containers.podman.podman_container:
+    debug: yes
+    conmon_pidfile: "{{ MARIADB_CONMON_PIDFILE }}"
+    image: "{{ MARIADB_IMAGE }}"
+    image_strict: yes
+    pod: "{{ POD_NAME }}"
+    recreate: yes
+    state: started
+    name: "{{ MARIADB_NAME }}"
+    env:
+      MYSQL_USER: "{{ MYSQL_USER }}"
+      MYSQL_PASSWORD: "{{ MYSQL_PASSWORD }}"
+      MYSQL_ROOT_PASSWORD: "{{ MYSQL_ROOT_PASSWORD }}"
+      MYSQL_DATABASE: "{{ MYSQL_DATABASE }}"
+    volume: "{{ MYSQL_DATA }}:/var/lib/mysql:Z"
+
+#- name: Wait for DB to initilize
+#  wait_for:
+#    timeout: 20
+
+- name: Create Wordpress container
+  containers.podman.podman_container:
+    debug: no 
+    conmon_pidfile: "{{ WP_CONMON_PIDFILE }}"
+    image: "{{ WP_IMAGE }}"
+    image_strict: yes
+    pod: "{{ POD_NAME }}"
+    recreate: yes
+    state: started
+    name: "{{ WP_NAME }}"
+    env:
+      MYSQL_DATABASE: "{{ MYSQL_DATABASE }}"
+      MYSQL_USER: "{{ MYSQL_USER }}"
+      MYSQL_PASSWORD: "{{ MYSQL_PASSWORD }}"
+      MYSQL_HOST: "{{ MYSQL_HOST }}"
+    volume: "{{ WP_HTML }}:/var/www/html:Z"   
