@@ -24,7 +24,3 @@ sudo dnf install ansible -y
 ```
 sudo ansible-playbook site.yml
 ```
-
- TODO 
-================================================================================
-- backup - script config/test

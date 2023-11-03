@@ -1,6 +1,4 @@
-This role deploys Wordpres via Docker.
-
-It can be broken down into 3 steps:
-  1. installs docker and dependencies
-  2. installs mariadb in a docker container
-  3. installs wordpress in a docker container
+This role deploys Wordpres via Docker/Podman.
+1. installs docker/podman and dependencies
+2. installs mariadb in a single pod
+3. installs wordpress in the same pod

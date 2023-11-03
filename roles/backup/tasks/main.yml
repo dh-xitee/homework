@@ -30,3 +30,5 @@
     minute: "0"
     hour: "16,20"
     job: "/var/backup/backup.sh"
+
+

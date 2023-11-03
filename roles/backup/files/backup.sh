@@ -1,32 +1,33 @@
 #!/bin/bash
-
 ###################################
 backup_dir="/var/backup"
 webapp_path="/var/www/html"
 database_name="wordpress"
-database_user="dbuser"
-database_pwd="password"
+database_user="root"
+database_pwd="pasx.123"
 database_host="localhost"
 retention_days=14
 ##################################
 
-date=`date +%d-%m-%y`
-path="$backup_dir$date"
+date=`date "+%Y-%m-%d_%H-%M"`
+path="$backup_dir/$date"
 echo $date
 mkdir -p $path > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    echo "-Successfully  created directory $path"
+    echo "-Successfully created directory $path"
 
-    mysqldump -u $database_user -p$database_pwd -h $database_host $database_name > $path/db_backup.sql
-
+    podman exec wp_mariadb mariadb-dump --user $database_user --password=$database_pwd $database_name > /var/backup/wordpress.sql
+    mv /var/backup/wordpress.sql $path
+    
     if [ $? -eq 0 ]; then
         echo "-Successfully created database dump"
 
-        tar -czvf  $path/backup_with_db.tar.gz $webapp_path $path/db_backup.sql > /dev/null 2>&1
+        podman volume export wp_html --output $path/wp_html.tar 
+        tar -czvf  $backup_dir/$date.tar.gz $path/wp_html.tar $path/wordpress.sql > /dev/null 2>&1
 
         if [ $? -eq 0 ]; then
                 echo "-Successfully completed file + db  backup process"
-        rm -rf $path/db_backup.sql
+        rm -rf $path
 
                 old_date=`date --date="$retention_days day ago" +%d-%m-%y`
                 old_path="$backup_dir$old_date"
