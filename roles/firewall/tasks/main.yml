@@ -28,5 +28,23 @@
 - name: install fail2ban-firewalld
   yum: name=fail2ban-firewalld state=present
 
+- name: fail2ban configuration file /etc/fail2ban/jail.local
+  ansible.builtin.copy:
+    src: files/jail.local
+    dest: /etc/fail2ban/jail.local
+    mode: '0655'   
+
+- name: fail2ban configuration file /etc/fail2ban/jail.d/00-firewalld.local
+  ansible.builtin.copy:
+    src: files/00-firewalld.local
+    dest: /etc/fail2ban/jail.d/00-firewalld.local
+    mode: '0655'
+
+- name: fail2ban configuration file /etc/fail2ban/jail.d/sshd.local
+  ansible.builtin.copy:
+    src: files/sshd.local
+    dest: /etc/fail2ban/jail.d/sshd.local
+    mode: '0655'
+
 - name: fail2ban service state
-  service: name=fail2ban state=started enabled=yes   
+  service: name=fail2ban state=restarted enabled=yes

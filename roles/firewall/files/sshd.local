@@ -1,0 +1,7 @@
+[sshd]
+enabled = true
+
+# Override the default global configuration
+# for specific jail sshd
+bantime = 1d
+maxretry = 5
