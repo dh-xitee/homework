@@ -8,7 +8,7 @@
        
 - name: install firewalld
   yum: name=firewalld state=present
-
+  
 - name: firewalld service state
   service: name=firewalld state=started enabled=yes
 
@@ -22,4 +22,11 @@
    - ssh
    - http
  
-   
+- name: install fail2ban
+  yum: name=fail2ban state=present
+
+- name: install fail2ban-firewalld
+  yum: name=fail2ban-firewalld state=present
+
+- name: fail2ban service state
+  service: name=fail2ban state=started enabled=yes   
